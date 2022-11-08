@@ -6,7 +6,8 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 
 let form = document.querySelector('#github-form')
-const container = document.querySelector('#github-container');
+const userContainer = document.querySelector('#user-list');
+const repoContainer = document.querySelector('#repos-list');
 form.addEventListener('submit', formSubmit);
 
 function formSubmit(e){
@@ -14,7 +15,7 @@ function formSubmit(e){
     let input = e.target.search.value;
     form.reset();
     searchUser(input);
-}
+};
 
 function searchUser(input){
     fetch(`https://api.github.com/search/users?q=${input}`, {
@@ -32,8 +33,8 @@ function cardHandler(e){
 };
 
 function cardCreator(e){
-    let div = document.createElement('div');
-    div.innerHTML = `
+    let li = document.createElement('li');
+    li.innerHTML = `
     <h2>${e.login}</h2>
     <img src =${e.avatar_url}>
     <a href =${e.url}>Profile</a>
@@ -42,13 +43,13 @@ function cardCreator(e){
     repoBtn.id = `${e.id}`;
     repoBtn.name = `${e.login}`
     repoBtn.innerText = `${e.login}'s Repos`;
-    repoBtn.addEventListener('click', repoHandler);
-    div.append(repoBtn);
-    container.appendChild(div);
+    repoBtn.addEventListener('click', repoFetch);
+    li.append(repoBtn);
+    userContainer.appendChild(li);
     // console.log(div);
 };
 
-function repoHandler(e){
+function repoFetch(e){
     // let btnId = e.target.id;
     let btnName = e.target.name;
     fetch(`https://api.github.com/users/${btnName}/repos`, {
@@ -56,11 +57,21 @@ function repoHandler(e){
         Accept: 'application/vnd.github.v3+json'
     })
     .then(res=>res.json())
-    .then(data=>console.log(data));
+    .then(data=>repoHandler(data));
 };
 
+function repoHandler(e){
+    for (git of e){
+    repoRender(git.url);
+    }
+};
 
-
+function repoRender(e){
+    console.log(e);
+   let li= document.createElement('li');
+   li.innerHTML = `<a href =${e}>Repo<M/a>`;
+   repoContainer.appendChild(li);
+}
 
 
 // Just below this are closing tags for the DOMContentLoaded.
