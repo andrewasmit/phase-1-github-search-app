@@ -37,18 +37,31 @@ function cardCreator(e){
     <h2>${e.login}</h2>
     <img src =${e.avatar_url}>
     <a href =${e.url}>Profile</a>
-    <a href=${e.repos_url}>Repos</a>
     `
-    let repoLink = document.createElement('a');
-    repoLink.innerHtml = `<a href=${e.repos_url}>Repos</a>`
-    repoLink.addEventListener('click', repoHandler);
-    div.append(repoLink);
+    let repoBtn= document.createElement('button');
+    repoBtn.id = `${e.id}`;
+    repoBtn.name = `${e.login}`
+    repoBtn.innerText = `${e.login}'s Repos`;
+    repoBtn.addEventListener('click', repoHandler);
+    div.append(repoBtn);
     container.appendChild(div);
+    // console.log(div);
 };
 
 function repoHandler(e){
-    console.log(e);
-}
+    // let btnId = e.target.id;
+    let btnName = e.target.name;
+    fetch(`https://api.github.com/users/${btnName}/repos`, {
+        method: 'GET',
+        Accept: 'application/vnd.github.v3+json'
+    })
+    .then(res=>res.json())
+    .then(data=>console.log(data));
+};
+
+
+
+
 
 // Just below this are closing tags for the DOMContentLoaded.
 })
